@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const HeroSection: React.FC = () => {
@@ -18,9 +19,11 @@ const HeroSection: React.FC = () => {
           Discover stylish, high-quality furniture for every room. Affordable, durable,
           and customizable pieces for your home.
         </p>
+        <Link href="/cart">
         <button className="mt-6 px-12 py-6 bg-[#B88E2F] text-white font-medium text-sm uppercase rounded hover:bg-yellow-600 transition duration-300">
           Buy Now
         </button>
+        </Link>
       </div>
     </section>
   );
