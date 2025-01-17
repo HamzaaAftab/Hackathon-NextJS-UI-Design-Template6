@@ -11,9 +11,9 @@ const Navbar: React.FC = () => {
     <nav className="w-full bg-white px-4 py-5 sm:px-8 md:px-12 lg:px-16">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-2xl font-bold text-black flex items-center">
+        <Link href="/" className="text-2xl font-bold text-black flex items-center">
           <Image src="/logo.png" alt="Logo" width={130} height={50} />
-        </div>
+        </Link>
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-12 text-sm font-medium text-black">
