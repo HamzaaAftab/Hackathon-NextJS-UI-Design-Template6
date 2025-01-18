@@ -13,7 +13,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <Link href="/product"> {/* Add link wrapper */}
+    <Link href={`/product/${product.id}`}> {/* Add link wrapper */}
       <div className="group relative flex flex-col">
         <div className="relative aspect-square w-[95%] overflow-hidden rounded-lg bg-gray-100">
           <Image

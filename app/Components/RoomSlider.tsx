@@ -1,8 +1,9 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronRight } from 'lucide-react'
+import { client } from '@/sanity/lib/client'
 import Image from 'next/image'
 
 type Room = {
@@ -12,29 +13,26 @@ type Room = {
   image: string
 }
 
-const rooms: Room[] = [
-  {
-    id: 1,
-    title: "Inner Peace",
-    category: "Bed Room",
-    image: "/r1.png", // Ensure this file exists in the /public directory
-  },
-  {
-    id: 2,
-    title: "Minimal Dining",
-    category: "Dining Room",
-    image: "/r1.png", // Ensure this file exists in the /public directory
-  },
-  {
-    id: 3,
-    title: "Reading Corner",
-    category: "Living Room",
-    image: "/r1.png", // Ensure this file exists in the /public directory
-  },
-]
-
 const RoomSlider = () => {
+  const [rooms, setRooms] = useState<Room[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
+
+  useEffect(() => {
+    const query = `*[_type == 'product']{
+      id,
+      title,
+      category,
+      "image": productImage.asset->url,
+    }`
+
+    client
+      .fetch(query)
+      .then((data) => {
+        console.log('Fetched products:', data)
+        setRooms(data)
+      })
+      .catch((error) => console.error('Error fetching products:', error))
+  }, [])
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % rooms.length)
@@ -68,13 +66,15 @@ const RoomSlider = () => {
               className="relative aspect-[4/3] w-full"
             >
               <div className="absolute inset-0">
-                <Image
-                  src={rooms[currentIndex].image}
-                  alt={rooms[currentIndex].title}
-                  layout="fill"
-                  objectFit="cover"
-                  priority
-                />
+                {rooms.length > 0 && (
+                  <Image
+                    src={rooms[currentIndex]?.image}
+                    alt={rooms[currentIndex]?.title || 'Room Image'}
+                    layout="fill"
+                    objectFit="cover"
+                    priority
+                  />
+                )}
               </div>
               <div className="absolute bottom-8 left-8 rounded-sm bg-white p-6">
                 <div className="flex items-center gap-4">
@@ -82,11 +82,11 @@ const RoomSlider = () => {
                     {String(currentIndex + 1).padStart(2, '0')}
                   </span>
                   <span className="text-lg font-medium text-gray-500">
-                    — {rooms[currentIndex].category}
+                    — {rooms[currentIndex]?.category}
                   </span>
                 </div>
                 <h3 className="mt-2 text-2xl font-bold text-gray-900">
-                  {rooms[currentIndex].title}
+                  {rooms[currentIndex]?.title}
                 </h3>
                 <button
                   onClick={nextSlide}
@@ -99,7 +99,7 @@ const RoomSlider = () => {
           </AnimatePresence>
 
           {/* Dots Indicator */}
-          <div className="absolute bottom-8 right-8 flex gap-2">
+          <div className="absolute bottom-4 right-8 flex gap-2">
             {rooms.map((_, index) => (
               <button
                 key={index}
